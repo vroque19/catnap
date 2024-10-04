@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 "hi"git
+=======
+tou"hi"
+Hello
+>>>>>>> 404c5eafda293d3950828d6e477305ec0b2dc129
