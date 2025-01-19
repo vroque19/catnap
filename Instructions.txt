@@ -1,0 +1,17 @@
+-- back
+cd .. 
+
+-- list directories
+ls 
+
+-- go into file 
+cd <file_name>.<file_type> 
+
+-- clone 
+git clone <github_clone_URL> 
+
+-- open/pulls up file
+open <file_name>.<file_type> 
+
+-- make new file 
+touch <new_file_name>.<file_type> 
