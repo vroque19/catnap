@@ -27,15 +27,22 @@ How to Run:
     cd your-repo
 
 2. Set up a virtual environment (optional but recommended):
-    python3 -m venv venv
-    source venv/bin/activate  # Linux/Mac
-    venv\Scripts\activate     # Windows
+    - python3 -m venv venv
+    - source venv/bin/activate  # Linux/Mac
+    - venv\Scripts\activate     # Windows
 
 3. Install the dependencies:
+    ```bash
     pip install smbus2
+    ```
 
 4. Run the sensor code:
-    Run the sensor code:
+    ```bash
+    light.py
+    ```
+
+5. Stop running code:
+    ctrl+c OR ctrl+z
 
 
 Image of Setup:
