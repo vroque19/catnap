@@ -12,6 +12,8 @@ To install the dependencies, run:
 ```bash
 pip install smbus2
 
+```
+
 For Raspberry Pi 5, the BH1750 module is connected as follows:
 
 SDA (Data) -> GPIO 2
@@ -34,4 +36,9 @@ How to Run:
 
 4. Run the sensor code:
     Run the sensor code:
+
+
+Image of Setup:
+
+![Image Description](images/Module_Setup.jpg)
 
