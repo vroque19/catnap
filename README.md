@@ -42,7 +42,13 @@ How to Run:
     ```
 
 5. Stop running code:
-    ctrl+c OR ctrl+z
+    ```bash
+    ctrl+c 
+    ```
+    OR
+    ```bash 
+    ctrl+z
+    ```
 
 
 Image of Setup:
