@@ -1,15 +1,23 @@
 Sleep-Optimized Lighting Visualization
 
-Overview
+Overview:
+Visualizes the relationship between time of day and optimized lighting conditions for sleep and circadian rhythm regulation. 
+The overlay includes data on illuminance (lux) and color temperature (Kelvin) for different times of the day to align with natural sleep cycles and promote better rest.
 
-This image visualizes the relationship between time of day and optimized lighting conditions for sleep and circadian rhythm regulation. The overlay includes data on illuminance (lux) and color temperature (Kelvin) for different times of the day to align with natural sleep cycles and promote better rest.
-
-Data Representation
-
+Data Representation:
 The image displays the natural progression of sunlight throughout a 24-hour period, with overlaid text indicating:
+* Time of Day (HH:MM format)
+* Illuminance (Lux): The brightness level at different times of the day.
+* Color Temperature (Kelvin): The correlated color temperature (CCT) of light, transitioning from warm (morning/evening) to cool (daytime) and back to warm at night.
 
-Time of Day (HH:MM format)
+Table: 
+| First Header  | Second Header |
+| ------------- | ------------- |
+| Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  |
 
-Illuminance (Lux): The brightness level at different times of the day.
+Goal/Purpose:
+* Implement smart lighting schedules for improved sleep quality.
+* Guide lighting system development for circadian rhythm alignment.
+* Understand how different light levels impact human sleep cycles.
 
-Color Temperature (Kelvin): The correlated color temperature (CCT) of light, transitioning from warm (morning/evening) to cool (daytime) and back to warm at night.
