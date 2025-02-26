@@ -11,10 +11,15 @@ The image displays the natural progression of sunlight throughout a 24-hour peri
 * Color Temperature (Kelvin): The correlated color temperature (CCT) of light, transitioning from warm (morning/evening) to cool (daytime) and back to warm at night.
 
 Table: 
-| First Header  | Second Header |
-| ------------- | ------------- |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
+|     Time      |      Lux       |Color Temp.(K)| Notes |
+| 1:00AM-3:00AM |   0 - 40 lux   |    1800K     | Low light to support deep sleep
+| 4:00AM-6:00AM |  100 - 300 lux |    2700K     | Gentle wake-up light, mimicking sunrise
+| 7:00AM-9:00AM |  600 - 800 lux | 3500 - 5000K | Wake-up
+|  5:00PM-7:00  |  500 - 300 lux |    4000K     | Preparing body for nighttime relaxation
+|  8:00-10:00   |  300 - 100 lux | 3000K - 2000K| Reducing alertness, promoting melatonin release
+|  10:00-12:00  |   40 - 0 lux   |    1500K     | Sleep-time
+
+Photo in discord
 
 Goal/Purpose:
 * Implement smart lighting schedules for improved sleep quality.
