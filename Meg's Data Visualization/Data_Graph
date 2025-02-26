@@ -1,0 +1,40 @@
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# Creating the DataFrame with the provided data
+data = {
+    "time": ["2:25", "2:26", "2:27", "2:28", "2:29", "2:30", "2:31", "2:32", "2:33", "2:34"],
+    "light": [13, 13, 13, 13, 13, 0, 0, 0, 0, 0],
+    "temp": [20.09, 20.09, 20.09, 20.01, 20.09, 20.01, 20.09, 20.01, 20.01, 20.09],
+    "motion": [0, 0, 0, 0, 0, 0, 1, 1, 1, 1]
+}
+
+df = pd.DataFrame(data)
+df["time"] = pd.to_datetime(df["time"], format="%H:%M").dt.strftime("%H:%M")  # Format time properly
+
+# Create figure and axis
+fig, ax1 = plt.subplots(figsize=(8, 5))
+
+# Plot light on primary y-axis
+ax1.plot(df["time"], df["light"], "gold", marker="o", label="Light")
+ax1.set_xlabel("Time")
+ax1.set_ylabel("Light", color="gold")
+ax1.tick_params(axis="y", labelcolor="gold")
+
+# Create second y-axis for temperature
+ax2 = ax1.twinx()
+ax2.plot(df["time"], df["temp"], "red", marker="s", label="Temperature")
+ax2.set_ylabel("Temperature (°C)", color="red")
+ax2.tick_params(axis="y", labelcolor="red")
+
+# Create third y-axis for motion
+ax3 = ax1.twinx()
+ax3.spines["right"].set_position(("outward", 60))  # Offset to avoid overlap
+ax3.plot(df["time"], df["motion"], "blue", marker="^", label="Motion")
+ax3.set_ylabel("Motion", color="blue")
+ax3.tick_params(axis="y", labelcolor="blue")
+
+# Show plot
+plt.title("Light, Temperature, and Motion Over Time")
+plt.xticks(rotation=45)
+plt.show()

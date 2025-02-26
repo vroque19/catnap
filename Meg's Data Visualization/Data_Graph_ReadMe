@@ -1,0 +1,12 @@
+Data Graph: Light, Temperature, and Motion Time Series Plot
+
+Overview:
+This Python script visualizes time-series data for light levels, temperature, and motion over a set period. The data is displayed using three separate y-axes, allowing for easy comparison of these variables over time.
+
+Features
+Three Y-Axes:
+Gold line: Light levels
+Red line: Temperature (°C)
+Blue line: Motion detection (0 = No motion, 1 = Motion detected)
+Time as X-Axis: The script plots measurements taken at different time intervals.
+Custom Styling: Uses different colors and markers for clarity.
