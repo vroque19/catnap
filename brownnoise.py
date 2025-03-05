@@ -2,6 +2,7 @@
 
 import numpy as np
 #import sounddevice as sd
+#import soundfile as sf
 from scipy.io import wavfile
 from scipy.signal import resample
 import gpiozero
@@ -12,10 +13,21 @@ PWM_PIN = 18
 CARRIER_FREQ = 40000
 SAMPLERATE = 40000
 
+#def convert_wav(file):
+#    data, samplerate = sf.read(AUDIO_FILE)
+#    return sf.write("cats_wav_test.wav", data, 40000, subtype='PCM_16')
+
 def load_audio(file):
     samplerate, audio = wavfile.read(file)
+    
+    # If audio file is stereo, converts to mono by averaging both channels
+    if audio.ndim == 2:
+        audio = np.mean(audio, axis=1)
+
     new_len = int(len(audio) * SAMPLERATE / samplerate)
     audio = resample(audio, new_len).astype(np.float32)
+    
+    # Normalize between -1 and 1
     audio = audio / np.max(np.abs(audio))
     return audio
 
