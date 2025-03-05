@@ -5,7 +5,7 @@ import numpy as np
 #import soundfile as sf
 from scipy.io import wavfile
 from scipy.signal import resample
-import gpiozero
+import pigpio
 from time import sleep
 
 AUDIO_FILE = "cats_test.wav" # Import selected audio file for transmission
@@ -40,13 +40,22 @@ audio = load_audio(AUDIO_FILE)
 modulated = am_modulate(audio, CARRIER_FREQ, SAMPLERATE)
 modulated = (modulated + 1) / 2
 
-signal = gpiozero.PWMOutputDevice(PWM_PIN, frequency=SAMPLERATE)
+pi = pigpio.pi('soft', 8888)
+
+# Added in case pigpio decides to act
+if not pi.connected():
+    print("pigpio failed to connect!")
+    exit()
+
+pi.hardware_PWM(PWM_PIN, SAMPLERATE, 500000)
 
 try:
     print("Directional Audio Laser ON")
     for sample in modulated:
-        signal.value = sample
+        pwm_value = int(sample * 1000000)  # Convert to pigpio range (0 - 1M)
+        pi.hardware_PWM(PWM_PIN, CARRIER_FREQ, pwm_value)
         sleep(1 / SAMPLERATE)
 except KeyboardInterrupt:
     print("Stopping laser")
-    signal.off()
+    pi.hardware_PWM(PWM_PIN, 0, 0)
+    pi.stop()
