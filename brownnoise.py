@@ -7,7 +7,7 @@ from scipy.signal import resample
 import gpiozero
 from time import sleep
 
-AUDIO_FILE = "audio.wav" # Import selected audio file for transmission
+AUDIO_FILE = "cats_test.wav" # Import selected audio file for transmission
 PWM_PIN = 18
 CARRIER_FREQ = 40000
 SAMPLERATE = 40000
