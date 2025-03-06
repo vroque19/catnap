@@ -10,7 +10,7 @@ Sleep Data: https://docs.google.com/document/d/1RjL8mFpSL2T81FSVjUJbbIZ4C64yyYo7
 
 Maybe use this: https://cloud.google.com/looker/docs/studio?visit_id=638764669736057988-1463686718&rd=2
 
-
+- - -
 
 # Sleep Score Algorithm
 
@@ -19,6 +19,8 @@ This project implements a **sleep score algorithm** using data from a **motion s
 
 ## Sleep Score Components
 The sleep score consists of six key metrics, each contributing a weighted percentage to the final score.
+
+### Sleep Quality (1-3)
 
 ### 1. Sleep Latency (10%)
 - **Definition:** Time taken to fall asleep after getting into bed.
@@ -57,9 +59,12 @@ The sleep score consists of six key metrics, each contributing a weighted percen
   ```
   - **Short wake-ups (< 2 mins) are ignored.**
   - **Capped at 0%.**
+    
 
-### 4. Sleep Duration (30%)
-- **Definition:** Total sleep time relative to **8-hour ideal**.
+### Sleep Quantity: How long did the user sleep overall? (7-9 hours recommended)
+
+### Sleep Duration (30%)
+- **Definition:** Total sleep time relative to **Optional: 8-hour ideal**.
 - **Measurement:**
   - Count `Total Sleep Time (TST)` using motion inactivity.
 - **Scoring:**
@@ -70,16 +75,19 @@ The sleep score consists of six key metrics, each contributing a weighted percen
   - **Suboptimal:** 6–7 or 9–10 hours → Scaled down
   - **Poor:** < 5 or > 10 hours → 0%
 
-### 5. Sleep Regularity Index (10%)
+
+### Regularity: Does the user go to bed at the same time consistently +/- 30 mins?
+### Sleep Regularity Index (10%)
 - **Definition:** Consistency of sleep schedule over past 3 days.
 - **Measurement:**
-  - Compare bedtimes within ±20 minutes of average bedtime.
+  - Compare bedtimes within ±30 minutes of average bedtime.
 - **Scoring:**
   ```
-  Sleep Regularity Score = 10% × (# of consistent bedtimes (±20 mins) / 3)
+  Sleep Regularity Score = 10% × (# of consistent bedtimes (±30 mins) / 3)
   ```
 
-### 6. Environmental Stability (10%)
+
+### Environmental Stability (10%)
 - **Definition:** Penalizes temperature and light fluctuations.
 - **Measurement:**
   - **Temperature Variance (σ_temp)** and **Light Variance (σ_light)**.
@@ -89,6 +97,7 @@ The sleep score consists of six key metrics, each contributing a weighted percen
   Environmental Stability Score = 10% - (0.5% × σ_temp) - (0.5% × σ_light)
   ```
   - **Capped at 0%.**
+
 
 ## Final Sleep Score Calculation
 ``` 
@@ -100,5 +109,4 @@ Sleep Score = Sleep Latency Score + Sleep Efficiency Score + Sleep Interruptions
 
 ## Next Steps
 - **Test with real sensor data.**
-- **Fine-tune thresholds based on feedback.**
-- **Optimize environmental penalties.**
+- **Compare Sleep Score with Sleep Data from Health/Sleep Apps**
