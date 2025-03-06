@@ -10,6 +10,8 @@ Sleep Data: https://docs.google.com/document/d/1RjL8mFpSL2T81FSVjUJbbIZ4C64yyYo7
 
 Maybe use this: https://cloud.google.com/looker/docs/studio?visit_id=638764669736057988-1463686718&rd=2
 
+
+
 # Sleep Score Algorithm
 
 ## Overview
@@ -100,5 +102,3 @@ Sleep Score = Sleep Latency Score + Sleep Efficiency Score + Sleep Interruptions
 - **Test with real sensor data.**
 - **Fine-tune thresholds based on feedback.**
 - **Optimize environmental penalties.**
-
-
