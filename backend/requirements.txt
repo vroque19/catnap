@@ -1,0 +1,18 @@
+# backend/requirements.txt
+fastapi==0.104.1
+uvicorn==0.24.0
+pydantic==2.5.2
+pytz
+python-dotenv
+requests
+smbus2
+gpiozero
+lgpio
+pigpio
+adafruit-circuitpython-ms8607
+# board
+seaborn
+matplotlib
+pandas
+numpy
+sqlite3
