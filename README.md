@@ -110,3 +110,9 @@ Sleep Score = Sleep Latency Score + Sleep Efficiency Score + Sleep Interruptions
 ## Next Steps
 - **Test with real sensor data.**
 - **Compare Sleep Score with Sleep Data from Health/Sleep Apps**
+
+## Citation
+- Journal of Clinical Sleep Medicine. (2016, February 2). Measuring sleep efficiency: What should the denominator be? [Link](https://jcsm.aasm.org/doi/full/10.5664/jcsm.5498)
+- Automated Sleep Scoring: A Review of the Latest Approaches. ScienceDirect, Dec. 2019, [Link](https://www.sciencedirect.com/science/article/pii/S1087079218301746). Accessed 5 Mar. 2025.
+- Van De Water, Alexander T. M., et al. "Objective Measurements of Sleep for Non-laboratory Settings as Alternatives to Polysomnography - a Systematic Review." *Journal of Sleep Research*, vol. 20, no. 1pt2, Mar. 2010, pp. 183–200, [DOI](https://doi.org/10.1111/j.1365-2869.2009.00814.x).
+
