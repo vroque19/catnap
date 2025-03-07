@@ -1,0 +1,58 @@
+
+
+def calculate_sleep_metrics(df):
+    # Convert timestamps to datetime
+    df['datetime'] = pd.to_datetime(df['date'] + ' ' + df['timestamp'])
+    
+    # Sleep Latency: Time from lights off (light = 0) to first period of no motion (motion = 0)
+    lights_off_time = df[df['light'] == 0].iloc[0]['datetime'] if not df[df['light'] == 0].empty else None
+    first_no_motion_time = df[(df['motion'] == 0) & (df['datetime'] > lights_off_time)].iloc[0]['datetime'] if lights_off_time else None
+    sleep_latency = (first_no_motion_time - lights_off_time).total_seconds() / 60 if first_no_motion_time else None
+    sleep_latency_score = max(0, 10 - (sleep_latency / 2) if sleep_latency else 0)
+    
+    # Sleep Duration: Total time motion = 0
+    total_sleep_time = df[df['motion'] == 0]['datetime'].diff().sum().total_seconds() / 3600 if not df[df['motion'] == 0].empty else 0
+    sleep_duration_score = min(30, (total_sleep_time / 8) * 30)
+    
+    # Sleep Efficiency: 100 * (time asleep / time in bed)
+    time_in_bed = (df['datetime'].iloc[-1] - df['datetime'].iloc[0]).total_seconds() / 3600
+    sleep_efficiency = (total_sleep_time / time_in_bed) * 100 if time_in_bed > 0 else 0
+    sleep_efficiency_score = min(30, (sleep_efficiency / 85) * 30)
+    
+    # Sleep Interruptions: Count of wake periods (> 5 min of motion = 1)
+    wake_periods = df[df['motion'] == 1]['datetime'].diff().dt.total_seconds().fillna(0)
+    interruptions = sum(wake_periods > 300)
+    sleep_interruptions_score = max(0, 10 - interruptions)
+    
+    # Sleep Regularity: Consistency of sleep start times over 3 days
+    df['day_start'] = df['datetime'].dt.date
+    start_times = df.groupby('day_start')['datetime'].first()
+    diffs = start_times.diff().dt.total_seconds().fillna(0) / 60
+    regularity_score = max(0, 10 - sum(abs(diffs) > 30))
+    
+    # Environmental Stability: Penalize temperature & light fluctuations
+    temp_fluctuations = df['temperature'].diff().abs().sum()
+    light_fluctuations = df['light'].diff().abs().sum()
+    environmental_stability_score = max(0, 10 - (temp_fluctuations + light_fluctuations) / 10)
+    
+    # Final Sleep Score
+    final_sleep_score = (sleep_latency_score + sleep_efficiency_score +
+                         sleep_interruptions_score + sleep_duration_score +
+                         regularity_score + environmental_stability_score)
+    
+    print(
+        f"Sleep Latency Score: {sleep_latency_score}\n"
+        f"Sleep Efficiency Score: {sleep_efficiency_score}\n"
+        f"Sleep Interruptions Score: {sleep_interruptions_score}\n"
+        f"Sleep Duration Score: {sleep_duration_score}\n"
+        f"Sleep Regularity Score: {regularity_score}\n"
+        f"Environmental Stability Score: {environmental_stability_score}\n"
+        f"Final Sleep Score: {final_sleep_score}"
+    )
+
+    
+
+# Example usage (upload csv and upadte name of sleep data file)
+# df = pd.read_csv('SleepData.csv')  # Load sleep data
+# results = calculate_sleep_metrics(df)
+
