@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from mpl_toolkits.axes_grid1 import host_subplot
 
-from query import get_sensor_data
+from .query import get_sensor_data
 
 # === 🎨 Define Colors === #
 FACE_COLOR = "#020713"
@@ -19,27 +19,19 @@ LIGHT_COLOR = "#4846E2"
 TEMP_TEXT_COLOR = "#4A60EB"
 
 
-PLOT_PATH = "../../static/charts/"
+PLOT_PATH = "../static/charts/"
+# PLOT_PATH = "../../static/charts/"
 # PLOT_PATH = "../charts/"
 tz_LA = pytz.timezone("America/Los_Angeles")    
 
 
 def analyze_data(df):
-    if df.empty:
-        print("No data found for the given time range.")
-        return
-
     df_hourly = (
         df.groupby("hour_bin")
         .agg({"temperature": "mean", "motion": "mean", "light": "mean"})
         .reset_index()
     )
 
-    # print("hourly:", df_hourly[["hour_bin"], ["light"], ["temperature"], ["motion"]])
-    # print(
-    #     "times only", pd.to_datetime(df_hourly["hour_bin"], format="%H:%M:%S").dt.time
-    # )
-    # df_hourly = pd.to_datetime(df_hourly["hour_bin"], format="%H:%M:%S").dt.time
     time_values = df_hourly["hour_bin"]
     time_values = [str(x).split(" ")[1][:5] for x in time_values]
     light_values = df_hourly["light"]
@@ -64,6 +56,9 @@ def analyze_data(df):
 
 def main():
     df = get_sensor_data()
+    if df.empty:
+        print("No data found for the given time range. (graph.py)")
+        return
     plt.rcParams["figure.figsize"] = (14, 8)
     # plt.title("Daily Sleep Data", fontsize=40, fontweight='bold', color=AXES_COLOR)
     host = host_subplot(111)
@@ -102,14 +97,14 @@ def main():
     # Set Labels & Ranges
     host.set_xlabel("Time", color=AXES_COLOR, fontweight="bold", fontsize=25)
     host.set_ylabel("Light Intensity (Lx)", fontsize=25)
-    host.set_ylim(light_min - 0.3, light_max + 1)
+    host.set_ylim(light_min - 0.1, light_max + 1)
     # plt.margins(x=1, y=2)
 
     ax1.set_ylabel("Temperature (°C)", fontsize=25)
-    ax1.set_ylim(temp_min -1, temp_max + 1)
+    ax1.set_ylim(temp_min - 0.5, temp_max + 1)
 
     ax2.set_ylabel("Motion (Boolean)", fontsize=25)
-    ax2.set_ylim(-0.02, 1)
+    ax2.set_ylim(-0.1, 1)
     host.margins(y=0.1)
 
     # Optionally, adjust tick label sizes
