@@ -14,9 +14,21 @@ light_path = os.path.abspath("/home/ubuntu/repos/471-project/backend/scripts/aut
 log_data_path = os.path.abspath(
     "/home/ubuntu/repos/471-project/backend/scripts/log_data.py"
 )
+graphs_path = os.path.abspath(
+    "/home/ubuntu/repos/471-project/backend/scripts/graph.py"
+)
+score_graph_path = os.path.abspath(
+    "/home/ubuntu/repos/471-project/backend/scripts/score_graph.py"
+)
+score_path = os.path.abspath(
+    "/home/ubuntu/repos/471-project/backend/scripts/calc_score.py"
+)
 sys.path.insert(0, light_path)
 sys.path.insert(0, log_data_path)
-from scripts import auth, log_data, score_graph
+sys.path.insert(0, graphs_path)
+sys.path.insert(0, score_graph_path)
+sys.path.insert(0, score_path)
+from scripts import auth, log_data, score_graph, graph, query, calc_score
 
 
 app = FastAPI()
@@ -42,6 +54,7 @@ def read_root():
     tables = c.fetchall()
     conn.close()
     return {"tables": [table[0] for table in tables]}
+
     
 async def update_sensor_data_background():
     try:
@@ -81,22 +94,47 @@ def get_sleep_wake_times():
     conn.close()
     return sleep_time, wake_time
 
-async def create_graphs():
-    ...
+async def update_sleep_score_background():
+    try:
+        date, day, score = calc_score.main()
+        print("score: ", score)
+        conn = get_db_connection()
+        c = conn.cursor()
+        c.execute(
+            """
+            INSERT INTO sleep_scores (date, day, score)
+            VALUES (?, ?, ?)
+            """,  (date, day, score),
+            )
+        conn.commit()
+        last_id = c.lastrowid
+        conn.close()
+        return {"success": True, "id": last_id}
+    except Exception as e:
+        print(f"Error updating sleep score: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
-def calc_sleep_score():
-    return 90
+
 
 async def run_at_wake_time():
     while True:
         try:
             sleep_time, wake_time = get_sleep_wake_times()  # Fetch wake_time from DB
+            # wake_time = datetime.strptime(str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")), "%Y-%m-%d %H:%M:%S")
+            # time.sleep(2)
             curr_time = datetime.strptime(str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")), "%Y-%m-%d %H:%M:%S")
-            if curr_time == wake_time:
-                print("wake time... calculating")
-                score = calc_sleep_score()
-                await create_graphs()
+            today = (curr_time.date())
+            start_time = wake_time.replace(year=today.year, month=today.month, day=today.day)
+            two_minutes_later = start_time + timedelta(minutes=2)
+            # allow 2 minutes for graphs to upload
+            if curr_time >= start_time:
+                print("time to get graphs... calculating")
+                await update_sleep_score_background()
                 await asyncio.sleep(1)
+                graph.main()
+                await asyncio.sleep(1)
+                score_graph.main()
+                await asyncio.sleep(3600)
             else:
                 print("not wake time... waiting...")
                 sleep_time, wake_time = get_sleep_wake_times()  # Fetch wake_time from DB
@@ -109,22 +147,18 @@ async def run_at_wake_time():
 
 
 async def log_data_in_time_window():
-    print("initiate data logging")
     sleep_time, wake_time = get_sleep_wake_times()
     while True:
         try:
             curr_time = datetime.strptime(str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")), "%Y-%m-%d %H:%M:%S") 
-            # Log current times for debugging
-            # print(f"Current time: {curr_time}")
-            # print(f"Sleep time: {sleep_time}")
-            # print(f"Wake time: {wake_time}")
+
             if sleep_time <= curr_time <= wake_time:
-                print("In sleep window - logging data")
+                # print("In sleep window - logging data")
                 await update_sensor_data_background()
                 await asyncio.sleep(1)
             else:
                 sleep_time, wake_time = get_sleep_wake_times()
-                # print(f"Outside sleep window, waiting 1 minute\nCurrent: {curr_time}\nSleep: {sleep_time}\nWake: {wake_time}")
+                print(f"Outside sleep window, waiting 1 minute\nCurrent: {curr_time}\nSleep: {sleep_time}\nWake: {wake_time}")
                 await asyncio.sleep(60)
         except Exception as e:
             print(f"Error in background task {str(e)}")
@@ -155,12 +189,10 @@ async def shutdown_event():
         except asyncio.CancelledError:
             pass 
 
-@app.post("/api/settings")
+@app.post("/api/sleepscores")
 async def update_sleep_scores(scores: models.SleepScores):
     try:
-        day = datetime.now(tz_LA).strftime("%a")
-        date = datetime.now(tz=tz_LA).strftime("%Y-%m-%d")
-        score = calc_sleep_score()
+        date, day, score = calc_score.main()
         conn = get_db_connection()
         c = conn.cursor()
         c.execute(
@@ -182,7 +214,7 @@ async def update_sleep_settings(settings: models.SleepSettings):
         conn = get_db_connection()
         c = conn.cursor()
         # date = datetime.now(tz=tz_LA).strftime("%Y-%m-%d")
-
+        print(settings.bed_time)
         c.execute(
             """
             REPLACE INTO settings (id, bed_time, wake_time)
